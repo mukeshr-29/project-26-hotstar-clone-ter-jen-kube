@@ -58,5 +58,31 @@ pipeline{
                 }
             }
         }
+        stage('docker build & push'){
+            steps{
+                script{
+                    withDockerRegistry(credentialsId: 'dockerhub', toolName: 'docker'){
+                        sh 'docker build -t mukeshr29/hotstar-clone:latest .'
+                        sh 'docker push mukeshr29/hotstar-clone:latest'
+                    }
+                }
+            }
+        }
+        stage('docker scout img'){
+            steps{
+                script{
+                    withDockerRegistry(credentialsId: 'dockerhub', toolName: 'docker'){
+                        sh 'docker-scout quickview mukeshr29/hotstar-clone:latest'
+                        sh 'docker-scout cves mukeshr29/hotstar-clone:latest'
+                        sh 'docker-scout recommendations mukeshr29/hotstar-clone:latest'
+                    }
+                }
+            }
+        }
+        stage('deploy to docker'){
+            steps{
+                sh 'docker run -d --name hotstarclone -p 3000:3000 mukeshr29/hotstar-clone:latest'
+            }
+        }
     }
 }
