@@ -1,0 +1,46 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('git checkout') {
+            steps {
+                git 'https://github.com/mukeshr-29/project-26-hotstar-clone-ter-jen-kube.git'
+            }
+        }
+        stage('terraform version'){
+            steps{
+                sh 'terraform --version'
+            }
+        }
+        stage('initialize terraform'){
+            steps{
+                dir('EKS_TERRAFORM'){
+                    sh 'terraform init'
+                }
+            }
+        }
+        stage('validate terraform script'){
+            steps{
+                dir('EKS_TERRAFORM'){
+                    sh 'terraform validate'
+                }
+            }
+        }
+        stage('plan with terraform script'){
+            steps{
+                dir('EKS_TERRAFORM'){
+                    sh 'terraform plan'
+                }
+            }
+        }
+        stage('terraform apply/destroy'){
+            steps{
+                dir('EKS_TERRAFORM'){
+                    sh 'terraform ${action} --auto-approve'
+                    }
+                }
+            }
+        }
+    }
+
+
