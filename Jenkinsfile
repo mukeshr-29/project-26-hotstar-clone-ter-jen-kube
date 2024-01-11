@@ -79,6 +79,11 @@ pipeline{
                 }
             }
         }
+        stage('trivy img scan'){
+            steps{
+                sh 'trivy image mukeshr29/hotstar-clone:latest > trivyimg.txt'
+            }
+        }
         stage('deploy to docker'){
             steps{
                 sh 'docker run -d --name hotstarclone -p 3000:3000 mukeshr29/hotstar-clone:latest'
